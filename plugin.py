@@ -130,7 +130,7 @@ class Plugin:
     """VOD .STRM Writer Plugin for Dispatcharr proxy."""
 
     name = "vodstrmpg"
-    version = "0.2.0"  # Hybrid version with best of both worlds
+    version = "0.3.0"  # Hybrid version with best of both worlds
     description = "Writes .strm and .nfo files for Movies & Series using Dispatcharr proxy with provider ranking, genre organization, and optimized TMDB batching."
 
     fields = [
@@ -628,42 +628,42 @@ class Plugin:
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 # Total movies with M3U relations (imported)
                 cur.execute("""
-                    SELECT COUNT(DISTINCT m.id)
+                    SELECT COUNT(DISTINCT m.id) as count
                     FROM vod_movie m
                     INNER JOIN vod_m3umovierelation mr ON m.id = mr.movie_id
                 """)
-                imported_movies = cur.fetchone()[0]
+                imported_movies = cur.fetchone()['count']
                 
                 # Total series with M3U relations (imported)
                 cur.execute("""
-                    SELECT COUNT(DISTINCT s.id)
+                    SELECT COUNT(DISTINCT s.id) as count
                     FROM vod_series s
                     INNER JOIN vod_m3useriesrelation sr ON s.id = sr.series_id
                 """)
-                imported_series = cur.fetchone()[0]
+                imported_series = cur.fetchone()['count']
                 
                 # Total episodes for imported series
                 cur.execute("""
-                    SELECT COUNT(DISTINCT e.id)
+                    SELECT COUNT(DISTINCT e.id) as count
                     FROM vod_episode e
                     INNER JOIN vod_series s ON e.series_id = s.id
                     INNER JOIN vod_m3useriesrelation sr ON s.id = sr.series_id
                 """)
-                imported_episodes = cur.fetchone()[0]
+                imported_episodes = cur.fetchone()['count']
                 
                 # Total in database (all records)
-                cur.execute("SELECT COUNT(*) FROM vod_movie")
-                total_movies = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(*) as count FROM vod_movie")
+                total_movies = cur.fetchone()['count']
                 
-                cur.execute("SELECT COUNT(*) FROM vod_series")
-                total_series = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(*) as count FROM vod_series")
+                total_series = cur.fetchone()['count']
                 
-                cur.execute("SELECT COUNT(*) FROM vod_episode")
-                total_episodes = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(*) as count FROM vod_episode")
+                total_episodes = cur.fetchone()['count']
                 
                 # Provider information
                 cur.execute("""
-                    SELECT ma.id, ma.name, ma.url
+                    SELECT ma.id, ma.name
                     FROM m3u_m3uaccount ma
                     ORDER BY ma.name
                 """)
