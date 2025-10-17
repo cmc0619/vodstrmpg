@@ -130,7 +130,7 @@ class Plugin:
     """VOD .STRM Writer Plugin for Dispatcharr proxy."""
 
     name = "vodstrmpg"
-    version = "0.3.0"  # Hybrid version with best of both worlds
+    version = "0.3.1"  # Fixed UUID serialization bug in manifest
     description = "Writes .strm and .nfo files for Movies & Series using Dispatcharr proxy with provider ranking, genre organization, and optimized TMDB batching."
 
     fields = [
@@ -1067,7 +1067,7 @@ class Plugin:
                     updated += 1
                 else:
                     created += 1
-                manifest_files[normalized_path] = {"uuid": uuid, "type": "movie", "id": movie_id}
+                manifest_files[normalized_path] = {"uuid": str(uuid), "type": "movie", "id": movie_id}
                 if write_nfo and tmdb_data:
                     self._write_movie_nfo(filepath, tmdb_data, dry_run)
                 if verbose:
@@ -1255,7 +1255,7 @@ class Plugin:
                             updated += 1
                         else:
                             created += 1
-                        manifest_files[normalized_path] = {"uuid": ep_uuid, "type": "episode", "series_id": series_id, "season": season_num, "episode": ep_num}
+                        manifest_files[normalized_path] = {"uuid": str(ep_uuid), "type": "episode", "series_id": series_id, "season": season_num, "episode": ep_num}
                         
                         # Optimized episode NFO from pre-fetched season map (no per-episode HTTP)
                         if write_nfo and ep_map:
