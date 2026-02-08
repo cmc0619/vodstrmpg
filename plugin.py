@@ -46,7 +46,7 @@ _monitor_stop_event = threading.Event()
 
 class Plugin:
     name = "VOD STRM Generator"
-    version = "0.0.7"
+    version = "0.0.14"
     description = (
         "Generate .strm and .nfo files for Dispatcharr VOD content. "
         "Supports auto-run after VOD refresh completes."
